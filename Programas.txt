@@ -1,0 +1,126 @@
+PROGRAMA 1 - ASSEMBLY
+
+# Inicialização       
+addi t0, x0, 10       # t0 = 10
+addi t1, x0, 20       # t1 = 20
+
+# Construir 666666 em t2
+addi t2, x0, 1302     # t2 = 1302
+addi t2, t2, 1302     # t2 = 2604
+slli t2, t2, 8        # t2 = 2604 << 8 = 666624
+addi t2, t2, 42       # t2 = 666666
+
+# Soma final
+add t0, t0, t1        # t0 = t0 + t1
+add t0, t0, t2        # t0 = t0 + t2
+
+
+
+PROGRAMA 1 - BINÁRIO
+
+0x00A00293
+0x01400313
+0x51600393
+0x51638393
+0x00839393
+0x02A38393
+0x006282B3
+0x007282B3
+
+
+
+
+
+
+
+
+
+
+PROGRAMA 2 - ASSEMBLY
+
+# Inicialização
+addi t0, x0, 10          # t0 = 10
+addi t1, x0, 20          # t1 = 20
+
+# Soma e salva no endereço 0x0
+add  t2, t0, t1          # t2 = t0 + t1
+sw   t2, 0(x0)           # Mem[0x0] = t2 
+
+# Carrega e soma 10
+lw   t2, 0(x0)           # t2 = Mem[0x0]
+addi t2, t2, 10          # t2 += 10
+
+# Branch condicional
+addi t3, x0, 40          # t3 = 40
+beq  t2, t3, label_if    # se t2 == 40 → if
+
+# Else (t2 ≠ 40)
+addi t2, t2, 20          # soma 20
+beq  x0, x0, label_end   # pular if
+
+# If (t2 == 40)
+label_if:
+addi t2, t2, 10        # soma 10
+
+# Salva resultado final em 0x4
+label_end:
+sw t2, 4(x0)           # Mem[0x4] = t2
+
+
+
+PROGRAMA 2 - BINÁRIO
+
+0x00A00293
+0x01400313
+0x006283B3
+0x00702023
+0x00002383
+0x00A38393
+0x02800E13
+0x01C38663
+0x01438393
+0x00000463
+0x00A38393
+0x00702223
+
+
+
+
+
+
+
+
+
+
+
+PROGRAMA 3 - ASSEMBLY
+
+addi t0, x0, 0        # t0 = i = 0
+addi t3, x0, 400      # t3 = limite de 400 bytes (100 inteiros)
+
+loop:
+slli t1, t0, 1        # t1 = i * 2 → valor a armazenar
+slli t2, t0, 2        # t2 = i * 4 → endereço (4 bytes por int)
+sw   t1, 0(t2)        # Mem[t2] = t1
+addi t0, t0, 1        # i++
+slli t4, t0, 2        # t4 = novo i * 4
+beq  t4, t3, end      # se endereço atual == 400 → fim
+beq  x0, x0, loop     # incondicional: volta ao loop
+
+
+end:
+# Fim do programa
+
+
+
+PROGRAMA 3 - BINÁRIO
+
+0x00000293
+0x19000E13
+0x00129313
+0x00229393
+0x0063A023
+0x00128293
+0x00229E93
+0x01CE8463
+0xFE0004E3
